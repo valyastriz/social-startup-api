@@ -27,3 +27,32 @@ const getSingleUser = async (req, res) => {
     }
 };
 
+// create a new user
+const createUser = async (req, res) => {
+    try {
+        const newUser = await User.create(req.body);
+        res.json(newUser);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+// update a user by ID
+const updateUser = async (req, res) => {
+    try {
+        const updatedUser = await User.findOneAndUpdate(
+            { _id: req.params.userId },
+            { $set: req.body },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'No user with that ID' });
+        }
+
+        res.json(updatedUser);
+    }   catch (err) {
+        res.status(500).json(err);
+    }
+};
+
