@@ -1,4 +1,5 @@
-const { User, Thought } = require('../models');
+const User = require('../models/User');
+const Thought = require('../models/Thought');
 
 // get all users
 const getUsers = async (req, res) => {
@@ -72,4 +73,50 @@ const deleteUser = async (req, res) => {
     }
 };
 
-module.exports = { getUsers, getSingleUser, createUser, updateUser, deleteUser };
+// Add a friend to a user's friend list
+const addFriend = async (req, res) => {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $addToSet: { friends: req.params.friendId } },  // Use $addToSet to avoid duplicates
+        { new: true }
+      );
+  
+      if (!user) {
+        return res.status(404).json({ message: 'No user with that ID' });
+      }
+  
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
+  
+  // Remove a friend from a user's friend list
+  const removeFriend = async (req, res) => {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $pull: { friends: req.params.friendId } },  // Use $pull to remove a friend
+        { new: true }
+      );
+  
+      if (!user) {
+        return res.status(404).json({ message: 'No user with that ID' });
+      }
+  
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
+  
+  module.exports = {
+    getUsers,
+    getSingleUser,
+    createUser,
+    updateUser,
+    deleteUser,
+    addFriend,
+    removeFriend
+  };
