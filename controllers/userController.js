@@ -56,3 +56,20 @@ const updateUser = async (req, res) => {
     }
 };
 
+// delete a user and their associated thoughts
+const deleteUser = async (req, res) => {
+    try {
+        const user = await User.findOneAndDelete({ _id: req.params.userId });
+
+        if (!user) {
+            return res.status(404).json({ message: 'No user with that ID' });
+        }
+
+        // remove user's associated thoughts
+        await Thought.deleteMany({ _id: { $in: user.thoughts } });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+module.exports = { getUsers, getSingleUser, createUser, updateUser, deleteUser };
