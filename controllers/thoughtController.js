@@ -129,6 +129,6 @@ module.exports = {
     createThought, 
     updateThought, 
     deleteThought, 
-    addReaction,    // Don't forget to export the new functions
+    addReaction,
     removeReaction
 };
