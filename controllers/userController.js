@@ -68,7 +68,9 @@ const deleteUser = async (req, res) => {
 
         // remove user's associated thoughts
         await Thought.deleteMany({ _id: { $in: user.thoughts } });
+        res.status(200).json({ message: "User and all thoughts are gone..."});
     } catch (err) {
+        console.error(err);
         res.status(500).json(err);
     }
 };
